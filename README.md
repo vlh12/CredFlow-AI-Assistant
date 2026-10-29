@@ -199,3 +199,82 @@ Apply database/lender-management.sql as the local Oracle administrator in FREEPD
 The browser requests cookie login with X-CredFlow-Session: cookie. The Node gateway validates the Auth JWT and keeps it in server memory; the browser receives only an opaque session ID (HttpOnly, SameSite=Strict, host-only, Path=/api). Each portal has a separate cookie name. The session ends at the earlier of JWT expiry and 15 minutes after token issuance. GET /api/session restores safe account metadata without exposing the JWT or extending expiry. POST /api/session/logout requires the portal origin, revokes the session and clears its cookie. Cookie-authenticated writes require the exact same origin. A user-ID guard rejects stale-tab actions after switching accounts. Existing bearer-token clients remain supported. No database migration is required. Local HTTP is supported; set CREDFLOW_COOKIE_SECURE=true when serving behind HTTPS. Restarting a portal server requires users of that portal to sign in again.
 
 Verification: node --test tests/contracts.test.mjs tests/sessions.test.mjs from frontend. Session tests cover restoration, fixed expiry, logout revocation, portal separation, origin checks, stale-account guards and token-free browser requests.
+
+## AI loan application assistant using local Ollama
+
+Seller Portal > Apply for loan now includes **Get help with this application**,
+**Save draft**, **Check application**, and a final review before explicit submission.
+The form and assistant share the current draft. Accepted suggestions update the form;
+manual edits invalidate pending suggestions and the review. Declarations are never
+filled by AI or restored as accepted. If Ollama is unavailable, editing, saving,
+validation and submission remain available. If draft storage itself is unavailable,
+the original manual loan-request form remains usable.
+
+The assistant runs in a separate `com.credflow.auth.assistant` package inside Auth.
+Drafts are stored in `CF_AUTH.CF_LOAN_DRAFTS`, with seller ownership and optimistic
+versions. Final submission calls the existing `LoanRequestService` in the same
+transaction that marks the draft submitted. Existing loan processing is unchanged.
+Submitted drafts cannot be edited. AI cannot grant permissions, submit, approve,
+or select financial values without explicit seller confirmation.
+
+For an existing installation, apply only
+`database/ai-assistant/01-create-loan-drafts.sql` as SYSTEM in FREEPDB1, after confirming
+the table does not already exist. Fresh setup includes this migration automatically.
+No existing tables or accounts are reset. Rebuild Auth and restart Auth and the four
+portal servers after adding the routes. Portal restarts end existing login sessions.
+
+Install Ollama locally and make the selected model available, for example:
+
+```powershell
+ollama pull qwen3:1.7b
+ollama serve
+```
+
+An already running Ollama instance can be reused; do not start a second server.
+Settings in private Auth properties (defaults shown):
+
+```properties
+credflow.assistant.ollama-url=http://127.0.0.1:11434
+credflow.assistant.model=qwen3:1.7b
+credflow.assistant.timeout-seconds=45
+```
+
+Only local HTTP Ollama addresses are accepted. The browser never calls Ollama.
+The client uses `/api/chat` with a JSON schema, non-streaming responses and thinking
+disabled. Backend validation checks editable fields, real purpose enums, decimal
+amounts and explicit numeric evidence. Ambiguous financial figures require a monthly
+period and are not silently converted. Small models can still produce inaccurate
+explanations: review the actual form and never treat assistance as credit advice.
+
+Only the current permitted financial fields and seller message are sent to the
+local model. Profile contact details, date of birth, document reference, JWTs and
+credentials are excluded from the supplied draft context. Conversation text is
+kept in the open browser panel only and is not stored by CredFlow. Do not type secrets
+or real identity documents in messages. Drafts persist for resume; no automatic
+retention policy is enabled. Choose a retention policy before broader deployment.
+
+APIs are under `/api/v1/seller/loan-drafts`: GET/POST collection, GET/PATCH `/{id}`,
+POST `/{id}/validate`, POST `/{id}/assistant/messages`, POST `/{id}/submit`.
+PATCH and assistant messages require `draftVersion`; stale writes or model replies
+return 409. The submission route requires explicit declarations and an idempotency
+key. The original seller loan-request route remains available for manual fallback.
+
+Verification:
+
+```powershell
+mvn -f backend/member1/auth-service/pom.xml "-Dtest=!AuthServiceApplicationTests" test
+node --test frontend/tests/contracts.test.mjs frontend/tests/assistant.test.mjs tests/setup-helpers.test.mjs
+$env:CREDFLOW_ALLOW_WRITE_TEST='true'
+node tests/ai-assistant.cjs
+```
+
+The existing `AuthServiceApplicationTests` context test requires a separately
+configured Oracle datasource and signing keys. It is excluded from the credential-free
+unit command above. The opt-in live test requires the full local stack and Ollama;
+it creates a synthetic verification seller, submits one request, and cancels its
+verification application. It preserves existing seller records.
+
+Approved field explanations are held in `assistant/field-descriptions.json`.
+Known field-definition questions use these reviewed definitions verbatim after the
+model interaction, so small-model wording cannot redefine debt, expenses or tenure.
+AI continues to handle other questions and propose validated, optional updates.

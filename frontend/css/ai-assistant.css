@@ -1,0 +1,14 @@
+/* Loan form and local AI assistant */
+#modal:has(form[data-loan-request]){width:min(1080px,calc(100% - 24px))}
+.loan-layout{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(280px,1fr);gap:24px;overflow:auto;min-height:0;padding:2px}
+#modal .loan-layout .loan-request-fields{overflow:visible;max-height:none}
+.loan-assistant{padding:18px;background:#f6f4fa;border:1px solid var(--line);border-radius:12px;align-self:start;min-width:0}
+.loan-assistant h3{margin:0 0 10px}.loan-assistant p{line-height:1.65;font-size:12px;margin:10px 0}
+.loan-assistant textarea{width:100%;resize:vertical;margin:8px 0;font:inherit;padding:10px;border:1px solid var(--line);border-radius:8px}
+.loan-assistant label{font-size:12px}.assistant-conversation{max-height:250px;overflow:auto;overflow-wrap:anywhere}
+.assistant-conversation p{background:white;padding:10px;border-radius:8px;white-space:pre-wrap}
+.assistant-draft-controls{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}.assistant-suggestion{border-top:1px solid var(--line);padding:8px 0}.assistant-suggestion button{margin:0 6px 4px 0}
+[data-ai-review] dt{font-size:11px;color:var(--muted);margin-top:10px}[data-ai-review] dd{margin:3px 0;overflow-wrap:anywhere;font-size:13px}
+@media(max-width:760px){.loan-layout{grid-template-columns:1fr}.loan-assistant{margin-bottom:8px}}
+.loan-layout{grid-auto-rows:max-content;align-content:start}
+#modal .loan-layout .loan-request-fields{min-height:min-content;flex:none}

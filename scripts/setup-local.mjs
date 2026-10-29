@@ -12,7 +12,7 @@ export const migrations=[
  'database/organization-catalog.sql','database/seller-registration.sql','database/seller-loan-requests.sql',
  'database/marketplace-business-history.sql','database/offer-terms-documents.sql','database/marketplace-management.sql',
  'database/scope-completion.sql','database/phase0-alignment.sql','database/phase0-completion/01_financial_permission_checkpoint.sql',
- 'database/bank-c-tables.sql','database/password-recovery.sql','database/fresh-install/seed-organizations.sql','database/lender-management.sql',
+ 'database/bank-c-tables.sql','database/password-recovery.sql','database/fresh-install/seed-organizations.sql','database/lender-management.sql','database/ai-assistant/01-create-loan-drafts.sql',
 ];
 function sqlBody(root,relative){
  const content=fs.readFileSync(path.join(root,relative),'utf8');

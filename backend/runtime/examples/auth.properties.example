@@ -8,3 +8,8 @@ credflow.jwt.issuer=credflow-auth
 credflow.jwt.audience=credflow-api
 credflow.jwt.public-key-path=C:/credflow/CredFlow/backend/runtime/private/auth-public.pem
 credflow.jwt.private-key-path=C:/credflow/CredFlow/backend/runtime/private/auth-private.pem
+
+# Local Ollama assistant (no provider API key)
+credflow.assistant.ollama-url=http://127.0.0.1:11434
+credflow.assistant.model=qwen3:1.7b
+credflow.assistant.timeout-seconds=45

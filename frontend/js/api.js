@@ -35,7 +35,7 @@ export class LiveApi {
     let response;
     try {
       response=await this.fetcher(`${config[`${service}Base`]}${path}`,{
-        method:method || (body===undefined?'GET':'POST'), credentials:'same-origin',cache:'no-store', signal:AbortSignal.timeout(20000),
+        method:method || (body===undefined?'GET':'POST'), credentials:'same-origin',cache:'no-store', signal:AbortSignal.timeout(path.endsWith('/assistant/messages')?60000:20000),
         headers:{...this.authHeaders(service),'X-Correlation-ID':correlationId,...(body===undefined?{}:{'Content-Type':'application/json','Idempotency-Key':key})},
         ...(body===undefined?{}:{body:JSON.stringify(body)}),
       });

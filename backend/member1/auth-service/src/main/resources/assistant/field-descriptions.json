@@ -1,0 +1,10 @@
+{
+ "requestedAmount":"Requested amount is the total loan amount you want to borrow, expressed in INR. It must be positive. It is separate from any amount a lender may offer.",
+ "loanPurpose":"Loan purpose describes how the business will use the money. Choose working capital for operating costs, purchase inventory for buying stock, or business expansion for expanding operations.",
+ "preferredTenureMonths":"Preferred tenure is the number of months over which you would like to repay the loan. Enter 1 to 120 months. This is your request; the lender's actual offer may specify different terms.",
+ "declaredMonthlyIncome":"Declared monthly income is the income you report receiving in one month, in INR. Provide the monthly figure yourself. Do not enter an annual figure or assume that sales and income are the same.",
+ "monthlyExpenses":"Monthly expenses are your reported business and living costs for one month, in INR, such as rent and utilities. Report existing loan repayments separately under existing monthly debt repayments.",
+ "existingMonthlyDebt":"Existing monthly debt repayments are the payments you already make on existing borrowing in one month, in INR, such as loan EMIs. Rent and utility bills belong under monthly expenses. Enter 0.00 only if you have no existing debt repayments.",
+ "dateOfBirth":"Enter your fictional seller date of birth directly in the form for prototype KYC. The seller must be at least 18. Do not share real identity information with the assistant.",
+ "documentReference":"Use a fictional TEST- document reference for this simulated identity check. Do not provide real Aadhaar, PAN or other identity document details."
+}
