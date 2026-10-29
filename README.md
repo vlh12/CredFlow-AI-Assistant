@@ -263,6 +263,8 @@ Auth service: LoanDraftController
    values. **Confirm and request loan** requires the seller's explicit declarations
    and calls the existing `LoanRequestService`. The same transaction marks the draft
    submitted. Submitted drafts cannot be edited.
+<img width="816" height="458" alt="image" src="https://github.com/user-attachments/assets/455bcac0-4dd0-4432-8aaf-ae0de36b289c" />
+<img width="959" height="485" alt="image" src="https://github.com/user-attachments/assets/f611d058-6c08-41e4-a545-cc83a9c4eadd" />
 
 ### Files added for the AI feature
 
